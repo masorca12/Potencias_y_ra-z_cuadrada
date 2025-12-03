@@ -70,45 +70,53 @@ function generateOptions(correct, topic) {
     let options = new Set();
     options.add(correct);
     
-    // Freno de seguridad: Máximo 20 intentos para encontrar respuestas falsas
-    let attempts = 0; 
+    // SEGURIDAD: Máximo 20 intentos. Si no encuentra opciones, se rinde para no trabar la PC.
+    let safetyCounter = 0;
 
-    while(options.size < 4 && attempts < 20) {
+    while(options.size < 4 && safetyCounter < 20) {
+        safetyCounter++; // Aumentamos el contador
         let fake;
-        attempts++; // Contamos los intentos
+        
+        try {
+            if (topic === 'base10pos' || topic === 'scientific') {
+                // Multiplicar o dividir por 10 para confundir
+                let factor = Math.random() > 0.5 ? 10 : 0.1;
+                fake = correct * factor;
+                
+                // Si es base10 normal, evitar decimales raros (ej: 0.99999)
+                if(topic === 'base10pos') fake = Math.round(fake);
+                
+                // Si por mala suerte salió igual al correcto, le sumamos algo
+                if(fake === correct) fake = correct + 10;
+            } 
+            else if (topic === 'base10neg') {
+                let fakeExp = -(Math.floor(Math.random() * 6) + 1);
+                fake = parseFloat(Math.pow(10, fakeExp).toFixed(6));
+            } 
+            else { // Raíz cuadrada y otros
+                let variation = Math.floor(Math.random() * 10) - 5; 
+                fake = correct + variation;
+                if (fake <= 0) fake = 1; // Evitar negativos en raíces
+            }
 
-        if (topic === 'base10pos' || topic === 'scientific') {
-            // Generar multiplicando por 10 o dividiendo
-            let factor = Math.random() > 0.5 ? 10 : 0.1;
-            fake = correct * factor;
-            
-            // Si da decimales raros en base10pos, redondear
-            if(topic === 'base10pos') fake = Math.round(fake);
-            
-            // Evitar que sea igual
-            if(fake === correct) fake = correct + 10;
-        } 
-        else if (topic === 'base10neg') {
-            let fakeExp = -(Math.floor(Math.random() * 6) + 1);
-            fake = parseFloat(Math.pow(10, fakeExp).toFixed(6));
-        } 
-        else { // Raíz cuadrada
-            fake = correct + (Math.floor(Math.random() * 10) - 5); 
-            if (fake <= 0) fake = 1; 
-        }
-
-        if (fake !== correct) {
-            options.add(fake);
+            // Solo agregamos si es diferente al correcto y no es NaN
+            if (fake !== correct && !isNaN(fake)) {
+                options.add(fake);
+            }
+        } catch (e) {
+            console.log("Error generando opción, reintentando...");
         }
     }
-    
 
+    // PLAN B: Si después de 20 intentos no juntó 4 opciones, rellenamos con números simples
+    // Esto evita que el ciclo while se quede infinito
     while (options.size < 4) {
-        options.add(correct + options.size + 1);
+        options.add(correct + options.size + 10); // Relleno de emergencia
     }
 
     return Array.from(options).sort(() => Math.random() - 0.5);
 }
+
 
 function nextQuestion() {
     if (questionCount >= MAX_QUESTIONS) {
