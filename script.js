@@ -69,22 +69,44 @@ function generateQuestion(topic) {
 function generateOptions(correct, topic) {
     let options = new Set();
     options.add(correct);
+    
+    // Freno de seguridad: Máximo 20 intentos para encontrar respuestas falsas
+    let attempts = 0; 
 
-    while(options.size < 4) {
+    while(options.size < 4 && attempts < 20) {
         let fake;
+        attempts++; // Contamos los intentos
+
         if (topic === 'base10pos' || topic === 'scientific') {
+            // Generar multiplicando por 10 o dividiendo
             let factor = Math.random() > 0.5 ? 10 : 0.1;
             fake = correct * factor;
-            if(fake < 1 && topic === 'base10pos') fake = 0;
-        } else if (topic === 'base10neg') {
+            
+            // Si da decimales raros en base10pos, redondear
+            if(topic === 'base10pos') fake = Math.round(fake);
+            
+            // Evitar que sea igual
+            if(fake === correct) fake = correct + 10;
+        } 
+        else if (topic === 'base10neg') {
             let fakeExp = -(Math.floor(Math.random() * 6) + 1);
             fake = parseFloat(Math.pow(10, fakeExp).toFixed(6));
-        } else { // Raíz
-            fake = correct + (Math.floor(Math.random() * 5) - 2);
-            if (fake <= 0) fake = 1;
+        } 
+        else { // Raíz cuadrada
+            fake = correct + (Math.floor(Math.random() * 10) - 5); 
+            if (fake <= 0) fake = 1; 
         }
-        if (fake !== correct) options.add(fake);
+
+        if (fake !== correct) {
+            options.add(fake);
+        }
     }
+    
+
+    while (options.size < 4) {
+        options.add(correct + options.size + 1);
+    }
+
     return Array.from(options).sort(() => Math.random() - 0.5);
 }
 
@@ -223,4 +245,30 @@ function stopCamera() {
         videoStream.getTracks().forEach(track => track.stop());
         videoStream = null;
     }
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    checkExistingPermissions();
+});
+
+
+    if (Notification.permission === "granted") {
+        const btnNotify = document.getElementById('btn-notify');
+        if (btnNotify) {
+            btnNotify.style.display = 'none'; 
+        }
+    }
+
+    
+    navigator.permissions.query({ name: 'camera' }).then(permissionStatus => {
+        if (permissionStatus.state === 'granted') {
+            const btnStart = document.getElementById('btn-start-camera');
+            if (btnStart) {
+                btnStart.innerText = "Encender Cámara (Permiso Listo)";
+            }
+        }
+    }).catch(error => {
+        console.log("Navegador no soporta consulta de permisos de cámara");
+    });
 }
