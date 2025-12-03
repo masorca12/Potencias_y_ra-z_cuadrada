@@ -248,11 +248,14 @@ function stopCamera() {
 }
 
 
+/* --- AUTO-CHEQUEO DE PERMISOS AL INICIAR --- */
 document.addEventListener("DOMContentLoaded", () => {
     checkExistingPermissions();
 });
 
-
+function checkExistingPermissions() {
+    // 1. Revisar Notificaciones
+    // Si ya dijo que "SI" antes, ocultamos el botón naranja automáticamente.
     if (Notification.permission === "granted") {
         const btnNotify = document.getElementById('btn-notify');
         if (btnNotify) {
@@ -260,7 +263,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    
     navigator.permissions.query({ name: 'camera' }).then(permissionStatus => {
         if (permissionStatus.state === 'granted') {
             const btnStart = document.getElementById('btn-start-camera');
