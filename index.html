@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Potencias PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a90e2">
+</head>
+<body>
+
+    <header>
+        <h1> Escuela de Poderes</h1>
+        <nav>
+            <button onclick="showSection('home')"> Inicio</button>
+            <button onclick="showSection('temas')"> Aprender</button>
+            <button onclick="showSection('examen')"> Examen</button>
+            <button onclick="showSection('camera-section')"> Cámara</button>
+        </nav>
+    </header>
+
+    <main id="app-container">
+        
+        <section id="home" class="active">
+            <h2>¡Bienvenido, Matemático!</h2>
+            <p>Aprende sobre potencias y raíces con trucos de magia y escáner de tareas.</p>
+            
+            <button id="btn-notify" class="btn-primary" onclick="requestNotificationPermission()" style="background-color: #ff9800; margin-bottom: 20px;">
+                🔔 Activar Alertas de Examen
+            </button>
+
+            <div class="card">
+                <h3>¿Qué aprenderás hoy?</h3>
+                <ul>
+                    <li>El truco de los ceros (Base 10)</li>
+                    <li>La ranita saltarina (Decimales)</li>
+                    <li>Notación Científica</li>
+                    <li>El detective de cuadrados (Raíces)</li>
+                </ul>
+                <button class="btn-primary" onclick="showSection('temas')">¡Vamos a estudiar!</button>
+            </div>
+        </section>
+
+        <section id="temas" class="hidden">
+            <h2>📚 Explicación Paso a Paso</h2>
+            
+            <article class="topic">
+                <h3>1. Potencias de Base 10 (El truco de los ceros)</h3>
+                <p>El exponente nos dice cuántos ceros poner.</p>
+                
+                <div class="step-container">
+                    <div class="step">Paso 1: Escribe el 1.</div>
+                    <div class="step">Paso 2: Mira el exponente (3).</div>
+                    <div class="step">Paso 3: Agrega 3 ceros -> 1,000</div>
+                </div>
+
+                <img src="img/potencia_positiva.png" alt="Explicación visual potencia positiva" class="topic-img">
+
+            <article class="topic">
+                <h3>2. Exponentes Negativos (La Ranita)</h3>
+                <p>Aquí movemos el punto decimal a la izquierda.</p>
+                
+                <div class="step-container">
+                    <div class="step">Paso 1: Escribe "1."</div>
+                    <div class="step">Paso 2: Salta 2 veces a la izquierda.</div>
+                    <div class="step">Resultado: 0.01</div>
+                </div>
+
+                <img src="img/potencia_negativa.png" alt="Explicación visual potencia negativa" class="topic-img">
+            </article>
+
+            <article class="topic">
+                <h3>3. Notación Científica</h3>
+                <p>Multiplicamos un número por la potencia de 10.</p>
+                
+                <div class="step-container">
+                    <div class="step">Ejemplo: 4 x 10<sup>3</sup></div>
+                    <div class="step">El 4 se junta con 3 ceros.</div>
+                    <div class="step">Resultado: 4,000</div>
+                </div>
+                
+                <img src="img/notacion_cientifica.png" alt="Explicación notación científica" class="topic-img">
+            </article>
+
+            <article class="topic">
+                <h3>4. Raíz Cuadrada (El cuadrado perfecto)</h3>
+                <p>Buscamos qué número multiplicado por sí mismo da el resultado.</p>
+                
+                <img src="img/raiz_cuadrada.png" alt="Explicación raíz cuadrada" class="topic-img">
+             
+                <div class="step-container">
+                    <div class="step">¿5 x 5? No (25)</div>
+                    <div class="step">¿6 x 6? ¡Sí! (36)</div>
+                    <div class="step">Respuesta: 6</div>
+                </div>
+            </article>
+        </section>
+
+        <section id="examen" class="hidden">
+            <h2>Zona de Práctica (10 Preguntas)</h2>
+            <div class="exam-controls">
+                <button onclick="startQuiz('base10pos')">Nivel 1: Base 10 (Fácil)</button>
+                <button onclick="startQuiz('base10neg')">Nivel 2: Decimales (Medio)</button>
+                <button onclick="startQuiz('scientific')">Nivel 3: Notación Científica (Difícil)</button>
+                <button onclick="startQuiz('sqrt')">Nivel 4: Raíces (Hasta 50)</button>
+            </div>
+
+            <div id="quiz-container" class="hidden">
+                <h3 id="question-text">Pregunta...</h3>
+                <div id="options-container"></div>
+                <p id="feedback"></p>
+                <button id="next-btn" class="hidden" onclick="nextQuestion()">Siguiente Pregunta ➡️</button>
+            </div>
+            
+            <div id="score-board" class="hidden">
+                <h3>Resultados Finales</h3>
+                <p>Tu puntuación: <span id="final-score">0</span></p>
+                <button onclick="location.reload()">Volver al Inicio</button>
+            </div>
+        </section>
+
+        <section id="camera-section" class="hidden">
+            <h2>📷 Escáner de Ejercicios</h2>
+            <div class="camera-container">
+                <video id="video-feed" autoplay playsinline class="hidden"></video>
+                <canvas id="photo-canvas" style="display:none;"></canvas>
+                <img id="photo-preview" src="" alt="Vista previa" class="hidden">
+                <div id="camera-placeholder" style="color: white;">Cámara apagada</div>
+            </div>
+            <div class="camera-controls">
+                <button id="btn-start-camera" class="btn-primary" onclick="startCamera()">Encender Cámara</button>
+                <button id="btn-take-photo" class="btn-primary hidden" onclick="takePhoto()" style="background-color: #e91e63;">📸 Capturar</button>
+                <button class="btn-primary" onclick="stopCamera(); showSection('home')" style="background-color: #607d8b; margin-top: 10px;">Cerrar</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(console.log);
+        }
+    </script>
+</body>
+</html>

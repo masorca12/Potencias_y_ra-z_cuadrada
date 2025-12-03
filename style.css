@@ -1,0 +1,154 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f4f8;
+    color: #333;
+    padding-bottom: 50px;
+}
+
+header {
+    background-color: #4a90e2;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+header h1 { margin: 0 0 10px 0; font-size: 1.5rem; }
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+nav button {
+    background: rgba(255,255,255,0.25);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+nav button:hover { background: rgba(255,255,255,0.4); }
+
+main {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hidden { display: none; }
+.active { display: block; animation: fadeIn 0.5s; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card, .topic {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.btn-primary {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #357abd;
+    transition: transform 0.1s;
+}
+
+.btn-primary:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+/* Estilos de Explicación Paso a Paso */
+.step-container {
+    background-color: #f8f9fa;
+    border-left: 5px solid #4a90e2;
+    padding: 15px;
+    margin: 15px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.step {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+}
+.step:last-child { border-bottom: none; font-weight: bold; color: #2c3e50; font-size: 1.1em; }
+.arrow { color: #e74c3c; font-weight: bold; }
+.highlight { background-color: #fff176; padding: 0 5px; border-radius: 3px; }
+.topic-img { max-width: 100%; height: auto; border-radius: 10px; margin-top: 10px; border: 1px solid #ddd; }
+
+/* Estilos Examen */
+.exam-controls button {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 15px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    font-weight: bold;
+    color: #555;
+    transition: all 0.2s;
+}
+.exam-controls button:hover { border-color: #4a90e2; color: #4a90e2; }
+
+.option-btn {
+    display: block;
+    width: 100%;
+    margin: 12px 0;
+    padding: 15px;
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 15px; /* Bordes redondos */
+    border-bottom: 5px solid #ccc; /* Efecto 3D */
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: transform 0.1s;
+}
+
+.option-btn:active {
+    transform: translateY(4px);
+    border-bottom: 0px solid #ccc;
+}
+
+.correct { background-color: #d4edda; border-color: #28a745; color: #155724; border-bottom-color: #28a745; }
+.wrong { background-color: #f8d7da; border-color: #dc3545; color: #721c24; border-bottom-color: #dc3545; }
+
+/* Estilos Cámara */
+.camera-container {
+    background-color: #222;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 20px 0;
+    position: relative;
+    min-height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#video-feed, #photo-preview { width: 100%; height: auto; display: block; }
+#photo-preview { border: 4px solid #4CAF50; }
